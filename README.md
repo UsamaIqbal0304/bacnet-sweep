@@ -12,6 +12,9 @@ bacnet-sweep.py read <ip> <objtype>:<inst> <property> [--index N]
 bacnet-sweep.py points <ip> <device-instance> [--csv | --json]
 ```
 
+Pass both `--csv` and `--json` and you get JSON; it does not refuse the pair.
+
+
 ## Read this first: what it has actually been run against
 
 **It has never spoken to a real BACnet device.** There is no BACnet hardware on the machine
@@ -24,9 +27,20 @@ $ tests/test-bacnet-sweep.sh
 194 passed, 0 failed
 ```
 
+That is the count on a machine with a Niagara install on it. Without one, two of those
+assertions have nothing to compare against and the suite prints `192 passed, 0 failed` and
+a skip line — see the Tests section for what the two are.
+
 A real controller from any vendor will differ, most likely in which optional properties it
 refuses and in how it answers an unindexed `object-list` read. That is the biggest gap in
-the tool and no amount of test writing closes it. If you run this against real hardware and
+the tool and no amount of test writing closes it.
+
+Four limits are deliberate, and `--help` states them too. It speaks to the local IP subnet
+only: no BBMD, and no foreign-device registration, so discovery on a routed site will come
+back empty. It does no network-layer routing, so MS/TP devices behind a BACnet router are
+listed by the router and are not readable through this tool. And it refuses segmented
+responses rather than reassembling them — a long `object-list` is read one `--index` at a
+time instead. If you run this against real hardware and
 it gets something wrong, an issue with the output in it is the single most useful thing
 anyone can send.
 
@@ -56,9 +70,13 @@ python3 bacnet-sweep.py points 10.20.30.41 1201 --csv > ahu-01.csv
 It binds UDP 47808, which needs no privilege. What stops a sweep on a laptop is usually
 something else already holding that port — Workbench, a running station, another BACnet
 stack — in which case pass `--local-port 47809`: devices reply to whatever port the request
-came from. The tool diagnoses that case by name rather than printing an empty table, and a
-sweep that finds nothing prints the likely causes in order: the firewall, the port, the
-wrong broadcast address.
+came from. The tool diagnoses that case by name rather than printing an empty table. A sweep that
+finds nothing says so, and prints the five causes in the order they are worth checking:
+the wrong subnet or directed-broadcast address; devices that are MS/TP behind a BACnet
+router and have no IP of their own; a routed site that needs foreign-device registration
+with a BBMD; a host firewall dropping inbound UDP, or a wireless link that does not pass
+broadcast; the wrong port. The order is the tool's, not this page's — `NOTHING_ANSWERED`
+in the source is the text it prints.
 
 ## The read-only promise
 
