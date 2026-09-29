@@ -12,7 +12,7 @@ bacnet-sweep.py read <ip> <objtype>:<inst> <property> [--index N]
 bacnet-sweep.py points <ip> <device-instance> [--csv | --json]
 ```
 
-Pass both `--csv` and `--json` and you get JSON; it does not refuse the pair.
+`--csv` and `--json` are two formats for one stdout, so passing both is refused: `error: choose one of --csv and --json`, exit 2, before any packet goes out.
 
 
 ## Read this first: what it has actually been run against
@@ -24,11 +24,11 @@ it is the whole basis for trusting the tool:
 
 ```
 $ tests/test-bacnet-sweep.sh
-194 passed, 0 failed
+198 passed, 0 failed
 ```
 
 That is the count on a machine with a Niagara install on it. Without one, two of those
-assertions have nothing to compare against and the suite prints `192 passed, 0 failed` and
+assertions have nothing to compare against and the suite prints `196 passed, 0 failed` and
 a skip line — see the Tests section for what the two are.
 
 A real controller from any vendor will differ, most likely in which optional properties it
@@ -104,7 +104,7 @@ you do not own.
 ## Tests
 
 ```sh
-tests/test-bacnet-sweep.sh          # 194 assertions, a few seconds, all on 127.0.0.1
+tests/test-bacnet-sweep.sh          # 198 assertions, a few seconds, all on 127.0.0.1
 ```
 
 The fixture covers the Who-Is broadcast and the I-Am decode including max APDU and

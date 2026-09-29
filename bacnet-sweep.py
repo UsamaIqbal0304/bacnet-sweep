@@ -1471,7 +1471,8 @@ def main(argv=None):
     p = sub.add_parser("points", help="list every object on a device with value and units")
     p.add_argument("ip")
     p.add_argument("device_instance", type=int, metavar="device-instance")
-    p.add_argument("--csv", action="store_true", help="CSV on stdout instead of a table")
+    p.add_argument("--csv", action="store_true",
+                   help="CSV on stdout instead of a table (not with --json)")
     add_common(p)
     p.set_defaults(func=cmd_points)
 
@@ -1479,6 +1480,13 @@ def main(argv=None):
     if not getattr(a, "cmd", None):
         ap.print_help()
         return 2
+    # Two output formats, one stdout. The usage line at the top of this file has
+    # always read "[--csv | --json]", but until 2026-09-30 passing both printed
+    # JSON and said nothing about it, so a script that asked for CSV and was
+    # overruled had no way to find out. mqtt-tap refuses the same pair in the
+    # same words.
+    if getattr(a, "csv", False) and a.json:
+        ap.error("choose one of --csv and --json")
     try:
         if a.cmd == "discover" and (a.low is None) != (a.high is None):
             raise Fatal("--low and --high go together: a Who-Is range needs both ends")

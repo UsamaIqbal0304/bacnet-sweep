@@ -317,6 +317,19 @@ print("json points ok: 18 points, raw unit enumeration preserved alongside the t
 EOF
 want_exit "points --json keeps the raw enumeration" $? 0
 
+say "points --csv together with --json"
+# The usage line has always read "[--csv | --json]". Both together used to print
+# JSON and say nothing, so a script that asked for CSV got JSON and could not
+# tell. It is refused before any packet goes out, which is why this case needs
+# no fixture and no port.
+"$PY" "$TOOL" points 127.0.0.1 260001 $COMMON --csv --json \
+    >"$OUTDIR/points-bothfmt.txt" 2>"$OUTDIR/points-bothfmt.err"
+want_exit "--csv with --json exits 2" $? 2
+want "it says which two" "$OUTDIR/points-bothfmt.err" "choose one of --csv and --json"
+want_eq "nothing is written to stdout" \
+    "$(wc -c <"$OUTDIR/points-bothfmt.txt" | tr -d ' ')" 0
+want_not "no JSON leaked out with the error" "$OUTDIR/points-bothfmt.err" '"points":'
+
 say "points --limit"
 "$PY" "$TOOL" points 127.0.0.1 260001 $COMMON --limit 3 --csv >"$OUTDIR/points-limit.csv" 2>/dev/null
 want_exit "points --limit exits 0" $? 0
