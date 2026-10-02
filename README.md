@@ -132,9 +132,10 @@ attribution needed beyond the licence text.
 
 The [tool's page](https://plantroomlabs.com/tools/bacnet-sweep/) has real terminal
 transcripts from the fixture, the full blind-spot list, and notes on what a BACnet Who-Is
-does and does not find. Its two siblings are
-[mqtt-tap](https://github.com/UsamaIqbal0304/mqtt-tap) and
-[decoder-check](https://github.com/UsamaIqbal0304/decoder-check).
+does and does not find. Its three siblings are
+[mqtt-tap](https://github.com/UsamaIqbal0304/mqtt-tap),
+[decoder-check](https://github.com/UsamaIqbal0304/decoder-check) and
+[obix-mcp](https://github.com/UsamaIqbal0304/obix-mcp).
 
 Written by [Plantroom Labs](https://plantroomlabs.com) — Niagara Framework engineering:
 modules and drivers, bajaux widgets, PX graphics, station and controller work. Issues and
