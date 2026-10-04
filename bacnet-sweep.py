@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 Usama Iqbal (Plantroom Labs)
 """Ask a BACnet/IP network what is on it, and print the answer. Read-only, by construction.
 
     tools/bacnet-sweep.py discover [--broadcast ADDR]
